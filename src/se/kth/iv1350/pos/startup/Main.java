@@ -4,7 +4,7 @@ package se.kth.iv1350.pos.startup;
 import se.kth.iv1350.pos.controller.Controller;
 import se.kth.iv1350.pos.view.View;
 
-//Final version.
+
 
 /**
  * This main class starts the whole program.

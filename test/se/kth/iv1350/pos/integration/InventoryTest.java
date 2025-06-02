@@ -21,46 +21,38 @@ public class InventoryTest {
 
         Item item1 = inventory.fetchItem("abc123");
         Item item2 = inventory.fetchItem("def456");
-        sale.addItem(item1); 
-        sale.addItem(item2); 
-
+        sale.addItem(item1);
+        sale.addItem(item2);
     }
 
     /**
-     * creates a new inventory with one item and then adds it to a sale.
-     * tests that when an item quantity in the inventory is zero, after updating th einventory
-     * with the sale, the item does not exist anymore in the inventory.
+     * Tests that an item with quantity 1 is removed from inventory after sale.
      */
     @Test
     void testUpdateInventoryReducesStock() {
         Inventory inventory = new Inventory();
-        Item originalItem = inventory.fetchItem("abc123");
-        int originalQuantity = originalItem.getQuantity();
-    
         Sale sale = new Sale();
-        sale.addItem(new Item("abc123", "BigWheel Oatmeal", 
-            "BigWheel Oatleam 500ml, whole grain oats, high fiber, gluten free", 
-            29.90, 0.06, 1));
-    
+
+        Item item = inventory.fetchItem("abc123");
+        int originalQuantity = item.getQuantity();
+
+        sale.addItem(item); // quantity will now go to zero
+
         inventory.updateInventory(sale);
-    
-        Item updated = inventory.getItems().get("abc123");
-    
-        assertTrue(updated == null); 
+        Map<String, Item> items = inventory.getItems();
+
+        assertFalse(items.containsKey("abc123"), "Item should be removed from inventory when quantity reaches zero.");
     }
 
-
     /**
-     * verifies that an item is not in the inventory anymore if the quantity of it is zero after updating,
-     * and that if the quantity is larger than zero after updating, it should still be in the inventory.
+     * Verifies that an out-of-stock item is removed, while others remain.
      */
     @Test
     public void testUpdateInventoryRemovesOutOfStock() {
         inventory.updateInventory(sale);
         Map<String, Item> updatedItems = inventory.getItems();
 
-        
-        assertFalse(updatedItems.containsKey("abc123","abc123 should be removed after selling all stock"));
-        assertTrue(updatedItems.containsKey("def456","def456 should remain in inventory "));
+        assertFalse(updatedItems.containsKey("abc123"), "abc123 should be removed after selling all stock.");
+        assertTrue(updatedItems.containsKey("def456"), "def456 should remain in inventory.");
     }
 }

@@ -1,24 +1,21 @@
 package pos.test.se.kth.iv1350.pos.controller;
 
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 
+import se.kth.iv1350.pos.controller.Controller;
+import se.kth.iv1350.pos.model.SaleDTO;
+import se.kth.iv1350.pos.model.ItemDTO;
 
-
-import se.kth.iv1350.pos.controller.*;
-import se.kth.iv1350.pos.model.*;
 /**
- * tests the controller
+ * Tests the Controller class.
  */
 public class ControllerTest {
     private Controller controller;
 
     /**
-     * sets up controller and starts the sale.
+     * Sets up controller and starts a new sale.
      */
     @BeforeEach
     void setUp() {
@@ -27,39 +24,41 @@ public class ControllerTest {
     }
 
     /**
-     * tests that the cost of the sale is zero before any items have been added
+     * Tests that the total cost is 0.0 before any items are added.
      */
     @Test
     void testStartOfSaleTotalCost() {
         double totalCost = controller.getTotalCost();
-        assertEquals(0.00, totalCost, "Total cost should be 0.00 before any items have been added");
+        assertEquals(0.00, totalCost, 0.001, "Total cost should be 0.00 before any items have been added.");
     }
+
     /**
-     * tests that when a valid item ID has been added, the getItemID does not return null
+     * Tests that when a valid item ID is entered, a valid ItemDTO is returned.
      */
     @Test
     void testEnterValidItemID() {
-        Item item = controller.enterItemID("abc123");
-        assertNotNull(item.getItemID(), "The returned item should have the corect ID");
-        
+        ItemDTO item = controller.enterItemID("abc123");
+        assertNotNull(item, "Returned item should not be null.");
+        assertEquals("abc123", item.getItemID(), "Item ID should match the input.");
     }
+
     /**
-     * tests that when an invalid item ID is entered, the output is null
+     * Tests that when an invalid item ID is entered, null is returned.
      */
     @Test
-    void testenterInvalidItemID() {
-        Item item = controller.enterItemID("saw445");
-        assertNull(item, "The returned item should be null");
+    void testEnterInvalidItemID() {
+        ItemDTO item = controller.enterItemID("invalid999");
+        assertNull(item, "Returned item should be null for an invalid ID.");
     }
+
     /**
-     * tests that the saleDTO is not null whne an item has been added and that it contains
-     * the correct item.
+     * Tests that SaleDTO is correctly returned with the added item.
      */
     @Test
     void testGetSaleInfoReturnsCorrectDTO() {
         controller.enterItemID("abc123");
         SaleDTO saleDTO = controller.getSaleDetails();
         assertNotNull(saleDTO, "SaleDTO should not be null.");
-        assertTrue(saleDTO.getSoldItems().containsKey("abc123"), "SaleDTO should contain the added item");
+        assertTrue(saleDTO.getSoldItems().containsKey("abc123"), "SaleDTO should contain the added item.");
     }
-}   
+}
